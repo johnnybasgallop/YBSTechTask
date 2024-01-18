@@ -25,12 +25,15 @@ class SearchBarViewModel: ObservableObject {
                     DispatchQueue.main.async {
                         
                         for photo in response.photosInfo.photos {
-                            self.flickrPhotos.append(photo)
+                            self.appendUserDataToPhoto(photo: photo){photoResponse in
+                                self.flickrPhotos.append(photoResponse)
+                                
+                            }
                             
                         }
                         
                         completion(true)
-                        print(self.flickrPhotos.first?.tagsArray)
+                        
                         
                     }
                 } catch {
@@ -47,8 +50,41 @@ class SearchBarViewModel: ObservableObject {
         
     }
     
+    func appendUserDataToPhoto(photo : Photo, completion: @escaping (Photo) -> Void)  {
+        guard let url = URL(string: "https://api.flickr.com/services/rest/?method=flickr.people.getInfo&api_key=13a6dc3855f61a1b29cc785754781ce1&format=json&nojsoncallback=1&user_id=\(photo.owner)") else{return}
+        
+        URLSession.shared.dataTask(with: url) { data, _, error in
+            if let data = data {
+                
+                do {
+                    let decoder = JSONDecoder()
+                    let response = try decoder.decode(UserInfoResponse.self, from: data)
+                    
+                    DispatchQueue.main.async {
+                        
+                        let userInfo = response.person
+                        
+                        completion(Photo(title: photo.title, farm: photo.farm, id: photo.id, secret: photo.secret, server: photo.server, tags: photo.tags, owner: photo.owner, userInfo: userInfo))
+                        
+                        
+                        
+                    }
+                } catch {
+                    print("Error decoding JSON: \(error)")
+                    
+                }
+            } else if let error = error {
+                print("Error making API request: \(error)")
+                
+            }
+        }
+        .resume()
+        
+    }
+    
     
 }
+
 
 
 

@@ -14,6 +14,8 @@ struct Photo: Codable ,Identifiable, Hashable {
     let secret: String
     let server : String
     let tags : String
+    let owner : String
+    var userInfo : UserInfo?
     
     var tagsArray : [String] {
         return tags.components(separatedBy: " ")
@@ -23,6 +25,7 @@ struct Photo: Codable ,Identifiable, Hashable {
         return URL(string: "https://farm\(farm).staticflickr.com/\(server)/\(id)_\(secret).jpg")!
     }
     
+    
     enum CodingKeys: String, CodingKey {
         case title
         case id = "id"
@@ -30,6 +33,8 @@ struct Photo: Codable ,Identifiable, Hashable {
         case server
         case farm
         case tags
+        case owner
+        
         
     }
 }

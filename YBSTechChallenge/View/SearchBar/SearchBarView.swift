@@ -26,7 +26,13 @@ struct SearchBar: View {
     var body: some View {
         HStack {
             TextField("Search", text: $text, onCommit: {
-                searchBarViewModel.searchPhotos(for: text,page: 1){completion in}
+                searchBarViewModel.searchPhotos(for: text,page: 1){completion in
+                    if completion{
+                        if let url = searchBarViewModel.flickrPhotos.first?.userInfo?.profileURL {
+                            print(url)
+                        }
+                    }
+                }
             })
             .padding(.horizontal, 10)
             .frame(width: screenWidth * 0.75, height: 40)
