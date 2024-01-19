@@ -14,7 +14,7 @@ final class SearchViewModelTests: XCTestCase {
         let searchViewModel = SearchBarViewModel()
         searchViewModel.flickrPhotos = []
         
-        searchViewModel.searchPhotos(for: "Yorkshire"){completion in
+        searchViewModel.searchPhotos(for: "Yorkshire",page: 1){completion in
             if completion{
                 XCTAssertGreaterThan(searchViewModel.flickrPhotos.count, 0)
             }
@@ -23,9 +23,9 @@ final class SearchViewModelTests: XCTestCase {
                 XCTAssertEqual(searchViewModel.flickrPhotos.count, 0)
             }
         }
-        
-        
-        
     }
+    
+    
+    
 }
     

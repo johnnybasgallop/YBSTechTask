@@ -16,6 +16,7 @@ struct Photo: Codable ,Identifiable, Hashable {
     let tags : String
     let owner : String
     var userInfo : UserInfo?
+    var additionalDetails : AdditionalPhotoDetails?
     
     var tagsArray : [String] {
         return tags.components(separatedBy: " ")
@@ -34,7 +35,5 @@ struct Photo: Codable ,Identifiable, Hashable {
         case farm
         case tags
         case owner
-        
-        
     }
 }

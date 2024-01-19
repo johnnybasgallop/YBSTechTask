@@ -11,6 +11,6 @@ class PhotoCardViewModel : ObservableObject {
     static let shared = PhotoCardViewModel()
     
     func getMoreData() {
-//        
+        //        
     }
 }

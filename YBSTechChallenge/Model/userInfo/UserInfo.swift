@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct UserInfo: Codable, Hashable {
+struct UserInfo: Codable,Hashable{
     let nsid : String
     let iconServer : String
     let iconFarm : Int
@@ -34,4 +34,4 @@ struct Username: Codable, Hashable {
         case content = "_content"
     }
     
-   }
+}

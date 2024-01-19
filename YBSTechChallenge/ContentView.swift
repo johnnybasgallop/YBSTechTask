@@ -17,9 +17,14 @@ struct ContentView: View {
         
         VStack {
             SearchBarView().environmentObject(searchBarViewModel)
-            
-            
+        }.onAppear{
+            searchBarViewModel.searchPhotos(for: "Yorkshire", page: 1){success in
+                if success{
+                    print("loaded")
+                }
+            }
         }
+        
         .padding()
     }
 }

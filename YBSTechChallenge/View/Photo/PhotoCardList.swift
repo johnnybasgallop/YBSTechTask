@@ -13,7 +13,7 @@ struct PhotoCardList : View {
     var body: some View {
         ScrollView(showsIndicators: false){
             ForEach(searchBarViewModel.flickrPhotos, id: \.self){photo in
-                PhotoCard(photo: photo)
+                PhotoCard(tags: true, photo: photo)
             }
         }
     }

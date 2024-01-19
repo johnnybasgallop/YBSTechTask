@@ -1,36 +1,38 @@
 //
-//  SearchBarViewModel.swift
+//  UserInfoViewModel.swift
 //  YBSTechChallenge
 //
-//  Created by johnny basgallop on 17/01/2024.
+//  Created by johnny basgallop on 19/01/2024.
 //
 
 import Foundation
 
-class SearchBarViewModel: ObservableObject {
-    static let shared = SearchBarViewModel()
-    @Published var flickrPhotos: [Photo] = []
+class UserInfoViewModel : ObservableObject {
     
-    func searchPhotos(for query: String, page: Int, completion: @escaping (Bool) -> Void) {
-        self.flickrPhotos = []
-        guard let url = URL(string: "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=13a6dc3855f61a1b29cc785754781ce1&format=json&nojsoncallback=1&per_page=30&page=\(page)&safe_search=1&text&tags='\(query)'&sort=relevance&extras=tags") else{return}
+    
+    static let shared = UserInfoViewModel()
+    
+    @Published var userPhotos: [UsersPhotoModel] = []
+    
+    func searchPhotos(for userID: String, page: Int, completion: @escaping (Bool) -> Void) {
+        self.userPhotos = []
+        guard let url = URL(string: "https://api.flickr.com/services/rest/?method=flickr.people.getphotos&api_key=13a6dc3855f61a1b29cc785754781ce1&format=json&nojsoncallback=1&user_id=\(userID)") else{return}
         
         URLSession.shared.dataTask(with: url) { data, _, error in
             if let data = data {
                 
                 do {
                     let decoder = JSONDecoder()
-                    let response = try decoder.decode(FlickrPhotosInfoResponse.self, from: data)
+                    let response = try decoder.decode(UserPhotosInfoResponse.self, from: data)
                     
                     DispatchQueue.main.async {
                         
-                        for photo in response.photosInfo.photos {
+                        for photo in response.photosInfo.photos{
                             self.appendUserDataToPhoto(photo: photo){photoResponse in
                                 self.appendExtraPhotoData(photo: photoResponse){photo in
-                                    self.flickrPhotos.append(photo)
-                                    print(photo.additionalDetails?.dateUploaded)
+                                    self.userPhotos.append(photo)
+                                    
                                 }
-                                
                                 
                             }
                             
@@ -51,10 +53,9 @@ class SearchBarViewModel: ObservableObject {
         }
         .resume()
         
-        
     }
     
-    func appendUserDataToPhoto(photo : Photo, completion: @escaping (Photo) -> Void)  {
+    func appendUserDataToPhoto(photo : UsersPhotoModel, completion: @escaping (UsersPhotoModel) -> Void)  {
         guard let url = URL(string: "https://api.flickr.com/services/rest/?method=flickr.people.getInfo&api_key=13a6dc3855f61a1b29cc785754781ce1&format=json&nojsoncallback=1&user_id=\(photo.owner)") else{return}
         
         URLSession.shared.dataTask(with: url) { data, _, error in
@@ -68,7 +69,7 @@ class SearchBarViewModel: ObservableObject {
                         
                         let userInfo = response.person
                         
-                        completion(Photo(title: photo.title, farm: photo.farm, id: photo.id, secret: photo.secret, server: photo.server, tags: photo.tags, owner: photo.owner, userInfo: userInfo))
+                        completion(UsersPhotoModel(title: photo.title, farm: photo.farm, id: photo.id, secret: photo.secret, server: photo.server, owner: photo.owner, userInfo: userInfo))
                         
                         
                         
@@ -86,7 +87,7 @@ class SearchBarViewModel: ObservableObject {
         
     }
     
-    func appendExtraPhotoData(photo : Photo, completion: @escaping (Photo) -> Void)  {
+    func appendExtraPhotoData(photo : UsersPhotoModel, completion: @escaping (UsersPhotoModel) -> Void)  {
         guard let url = URL(string: "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=13a6dc3855f61a1b29cc785754781ce1&format=json&nojsoncallback=1&photo_id=\(photo.id)") else{return}
         
         URLSession.shared.dataTask(with: url) { data, _, error in
@@ -100,7 +101,7 @@ class SearchBarViewModel: ObservableObject {
                         
                         let additionalDetails = response.photo
                         
-                        completion(Photo(title: photo.title, farm: photo.farm, id: photo.id, secret: photo.secret, server: photo.server, tags: photo.tags, owner: photo.owner, userInfo: photo.userInfo, additionalDetails: additionalDetails))
+                        completion(UsersPhotoModel(title: photo.title, farm: photo.farm, id: photo.id, secret: photo.secret, server: photo.server, owner: photo.owner, userInfo: photo.userInfo, additionalDetails: additionalDetails))
                         
                     }
                 } catch {
@@ -119,7 +120,3 @@ class SearchBarViewModel: ObservableObject {
     
     
 }
-
-
-
-

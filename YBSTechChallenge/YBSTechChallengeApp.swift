@@ -11,7 +11,7 @@ import SwiftUI
 struct YBSTechChallengeApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView().preferredColorScheme(.light)
+            SplashScreenView().preferredColorScheme(.light)
         }
     }
 }

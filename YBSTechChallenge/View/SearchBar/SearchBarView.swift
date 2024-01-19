@@ -8,12 +8,18 @@
 import SwiftUI
 
 struct SearchBarView: View {
-    @State var text : String = ""
+    @State var text : String = "Yorkshire"
     @EnvironmentObject var searchBarViewModel : SearchBarViewModel
     var body: some View {
-        SearchBar(text: $text)
-        
-        PhotoCardList().environmentObject(searchBarViewModel)
+        NavigationView{
+            VStack{
+                SearchBar(text: $text)
+                Spacer()
+                PhotoCardList().environmentObject(searchBarViewModel)
+                Spacer()
+            }
+            
+        }
     }
 }
 
@@ -67,3 +73,4 @@ struct SearchButton : View {
 #Preview {
     SearchBarView().environmentObject(SearchBarViewModel())
 }
+
